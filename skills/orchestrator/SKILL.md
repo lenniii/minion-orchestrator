@@ -1,78 +1,63 @@
 ---
 name: orchestrator
-description: Orchestrate on request — async inbox, zero execution tools, delegate to background minions. Invoke with /orchestrate or when user asks to orchestrate minions.
+description: Orchestrate background workers — async inbox, frontier spawns only. Use with /orchestrate or when the user asks to orchestrate workers.
 ---
 
 # Orchestrator
 
-You orchestrate only. **Zero execution tools** — you spawn and decide; minions and subagents execute.
+You are the **frontier**: decompose, dispatch, triage the **inbox**. Workers execute; you spawn.
 
-Allowed without delegating: update `.cursor/orchestrator-state.md`, grill/quiz user, decompose, escalation decisions.
+`/orchestrate` | `orchestrator on` → this skill. `/direct` | `skip minions` | `skip workers` → normal agent, no worker spawns.
 
-**Forbidden:** read files, grep, edit code, run tests, publish issues, review code. Spawn instead.
+Board: [`state.md`](state.md). Models: [`models.md`](models.md). Loop: [`loop.md`](loop.md). Worktrees: [`worktrees.md`](worktrees.md).
 
-Track work per [`state.md`](state.md). Route tasks per [`routing.md`](routing.md). Steer per [`steering.md`](steering.md).
+## Inbox
 
-## Opt in
+Every spawn: `run_in_background: true`. On completion notification → update the **board** in chat → spawn next phase. Triage without barrier-wait unless the user asks for status.
 
-`/orchestrate` | `orchestrator on` | user asks to orchestrate minions → load this skill.
-
-`/direct` | `no orchestrator` | `skip minions` → normal agent, no minion spawns unless asked.
-
-## Async inbox
-
-All spawns: `run_in_background: true`. On completion notification → update state board → spawn next phase. **Never barrier-wait** unless user asks for status.
-
-## Delegate
-
-| Work | Delegate |
-|------|----------|
-| Explore, search, file reads | `explore` subagent |
-| Publish | `/minion` — [`publish.md`](publish.md) |
-| Implement, review, fix, commit | `/minion` — [`review-loop.md`](review-loop.md) |
-| Tests, lint, typecheck | `bash` subagent — [`shell-lane.md`](shell-lane.md) |
-| Parallel implement setup | `bash` — [`worktrees.md`](worktrees.md) |
-| Docs, research | `/minion` |
-
-Models: [`models.md`](models.md). Skills: [`skills.md`](skills.md). Escalation: [`escalation.md`](escalation.md).
-
-Matt flow: grill → prd → issues (you) → publish (auto-handoff) → implement minions.
-
-`/to-issues` explore step: spawn `explore` — not you.
+Your tools: decompose, decide, spawn, **post the board**. Everything else goes to a worker.
 
 ## 1. Decompose
 
-Split into tasks. Initialize state board. Assign loop depth per [`routing.md`](routing.md).
+Split the request into tasks. Post the initial **board** in chat.
 
-**Done when:** every task has ID, type, spec, `Blocked by`; parallel implement tasks have worktree plan.
+**Done when:** every task has ID, type, spec, `Blocked by`, and issue link (if any) filled in, and the board is posted.
 
-## 2. Execute
+## 2. Spawn
 
-**Publish** — [`publish.md`](publish.md) (auto-handoff to implement when done).
+Spawn only **unblocked** tasks — if task B depends on A, B waits until A is `done`. Batch all independent tasks in one turn.
 
-**Implement** — [`review-loop.md`](review-loop.md).
+Before each task's first implement spawn, create its worktree per [`worktrees.md`](worktrees.md). Pin `model` per [`models.md`](models.md). Set `Skill:` per [`loop.md`](loop.md). Update and re-post the board.
 
-Batch independent background spawns in one turn.
+**Done when:** every unblocked task has an `in-flight` row (or is waiting on a blocker), or you escalated / asked the user.
 
-**Done when:** no `in-flight` rows, or all `blocked`/`cancelled` escalated.
+## 3. Triage inbox
 
-## 3. Triage STATUS
+On each worker result — read STATUS, update the board, re-post it, spawn the next phase:
 
-On each completion — read result, update state board, **decide**, **spawn** (never execute):
+| STATUS | Next |
+|--------|------|
+| `DONE` | verify → review → gate → commit per [`loop.md`](loop.md) |
+| `DONE_WITH_CONCERNS` | accept or re-spawn |
+| `NEEDS_CONTEXT` | `composer-2.5` `explore` subagent, then re-spawn with context |
+| `BLOCKED` | re-spawn one model tier up, split task, or ask user |
+| `REVIEW_APPROVED` | gate → commit worker |
+| `REVIEW_CHANGES_REQUIRED` | fix-review worker → verify again |
 
-| STATUS | Decide | Delegate |
-|--------|--------|----------|
-| `DONE` | Next phase | verify → review → gate → commit per loop |
-| `DONE_WITH_CONCERNS` | Accept or retry | Re-spawn if retrying |
-| `NEEDS_CONTEXT` | What's missing | `explore` or re-spawn with context |
-| `BLOCKED` | Retry, split, ask user | Re-spawn per [`escalation.md`](escalation.md) |
-| `REVIEW_APPROVED` | Gate then commit | Commit minion |
-| `REVIEW_CHANGES_REQUIRED` | Proceed | Fix-review minion |
+Cap review at 5 rounds — then split or ask the user. Mediocre output → re-spawn one tier up per [`models.md`](models.md).
 
-**Done when:** every STATUS acted on; state board current.
+When a task reaches `done`, spawn any `pending` tasks whose blockers are all `done` (worktree first, then implement per [`worktrees.md`](worktrees.md)).
+
+**Done when:** every notification is acted on and the board is current in chat.
 
 ## 4. Close
 
-When batch complete per [`state.md`](state.md) — summarize issues, review rounds, commits, open items.
+When no row is `in-flight`, post a close summary: tasks done, blocked items, review rounds, commits, worktree branches.
 
-**Done when:** user has outcomes without reading minion transcripts.
+Then **ask the user** how to land the work — merge into one branch or stacked PRs per [`worktrees.md`](worktrees.md). Do not merge or open PRs until they choose.
+
+**Done when:** the user has the summary and has decided (or declined) landing.
+
+## Steering
+
+`what's running?` → re-post the board. `steer <id>: <instruction>` → resume that spawn (spawn ID), update board. `stop task <id>` → mark `cancelled`, re-post board.
