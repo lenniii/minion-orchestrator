@@ -1,43 +1,29 @@
 # Board
 
-The **board** is the live task queue — **posted in chat**, not hidden in a file. The user reads status here.
+Live task queue — **posted in chat**. User reads status here.
 
 ## When to post
 
-Post the full board after every state change:
+**Delta board** (changed rows + one-line summary) — default after spawn and triage.
 
-- decompose (initial board)
-- each spawn
-- each inbox triage
-- steer / stop / pause / resume
-- close
-
-`what's running?` → re-post the current board.
+**Full board** — decompose, steer / stop / pause / resume, close, `what's running?`.
 
 ## Format
 
-Lead with `## Board`, then a table:
+`## Board` then:
 
 | ID | Type | Phase | Status | Blocked by | Notes |
 |----|------|-------|--------|------------|-------|
-| T1 | implement | review | in-flight | — | `add-auth` · worktree `.worktrees/add-auth` · #42 |
-| T2 | implement | pending | pending | T1 | `auth-tests` · #43 |
+| T1 | implement | review | in-flight | — | `add-auth` · `.worktrees/add-auth` · #42 · spawn abc |
 
-**Columns**
+**Notes:** worktree, branch, issue #, model, round, spawn ID, verify result, commit SHA.
 
-- **ID** — short label (`T1`, `auth-fix`)
-- **Type** — `implement` | `review` | `fix-review` | `shell` | `docs` | `commit` …
-- **Phase** — current step in [`loop.md`](loop.md)
-- **Status** — `pending` | `in-flight` | `done` | `blocked` | `paused` | `cancelled`
-- **Blocked by** — task IDs that must be `done` before this task spawns (`—` if none)
-- **Notes** — worktree path, branch, issue #, model, round, spawn ID (for steer/resume), verify result, commit SHA
-
-Keep rows for `done` and `cancelled` tasks until close — then move outcomes into the close summary and drop the board.
+Keep `done` / `cancelled` rows until close → close summary → drop board.
 
 ## Phases
 
-`implement` (includes verify) → `review` → `fix` → `review` … → `gate` → `commit` → `done`
+`implement` → `review` → `fix` → `review` … → `gate` → `commit` → `done`
 
 ## Gate
 
-After `REVIEW_APPROVED`: confirm on the board that verify passed and review approved, then spawn commit worker.
+After `REVIEW_APPROVED`: board shows verify pass + review approved → spawn commit ([`prompts.md#commit`](prompts.md)).
