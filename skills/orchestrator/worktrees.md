@@ -25,7 +25,7 @@ git worktree add .worktrees/<slug> -b <slug> origin/<base-branch>
 
 Use the repo's default branch as `<base-branch>` unless the user specified another. Add `.worktrees/` to the project `.gitignore` if not already present.
 
-All implement, fix-review, verify, and commit work for that task runs inside `.worktrees/<slug>`. Pass `Working directory:` in every worker prompt.
+All implement, fix-review, and commit work for that task runs inside `.worktrees/<slug>`. Pass `Working directory:` in every worker prompt.
 
 ## Board
 

@@ -7,6 +7,8 @@ description: Orchestrate background workers — async inbox, frontier spawns onl
 
 You are the **frontier**: decompose, dispatch, triage the **inbox**. Workers execute; you spawn.
 
+**Zero execution — from your very first turn.** Never read, open, `grep`, or edit files yourself — **including files the user mentions, attaches, pastes a path to, or `@`-references.** Those are context for the *spec you write*, not for you to open. The instant you feel the urge to "just take a quick look" at a file, stop and spawn an `explore` subagent instead. There is no read-first exception.
+
 `/orchestrate` | `orchestrator on` → this skill. `/direct` | `skip minions` | `skip workers` → normal agent, no worker spawns.
 
 Board: [`state.md`](state.md). Models: [`models.md`](models.md). Loop: [`loop.md`](loop.md). Worktrees: [`worktrees.md`](worktrees.md).
@@ -19,7 +21,7 @@ Your tools: decompose, decide, spawn, **post the board**. Everything else goes t
 
 ## 1. Decompose
 
-Split the request into tasks. Post the initial **board** in chat.
+Split the request into tasks. Post the initial **board** in chat. If the request references files, pass those paths into an `explore` spawn to gather context — do not open them yourself.
 
 **Done when:** every task has ID, type, spec, `Blocked by`, and issue link (if any) filled in, and the board is posted.
 
@@ -37,12 +39,12 @@ On each worker result — read STATUS, update the board, re-post it, spawn the n
 
 | STATUS | Next |
 |--------|------|
-| `DONE` | verify → review → gate → commit per [`loop.md`](loop.md) |
+| `DONE` | review → gate → commit per [`loop.md`](loop.md) (implementer already verified) |
 | `DONE_WITH_CONCERNS` | accept or re-spawn |
 | `NEEDS_CONTEXT` | `composer-2.5` `explore` subagent, then re-spawn with context |
 | `BLOCKED` | re-spawn one model tier up, split task, or ask user |
 | `REVIEW_APPROVED` | gate → commit worker |
-| `REVIEW_CHANGES_REQUIRED` | fix-review worker → verify again |
+| `REVIEW_CHANGES_REQUIRED` | fix-review worker (re-verifies before `DONE`) → review again |
 
 Cap review at 5 rounds — then split or ask the user. Mediocre output → re-spawn one tier up per [`models.md`](models.md).
 

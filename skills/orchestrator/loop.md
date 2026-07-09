@@ -1,16 +1,15 @@
 # Loop
 
-Per **implement** task. Coding workers: `subagent_type: generalPurpose`, pin `model`, `run_in_background: true`. Verify / worktree: `shell`. Explore: `explore`.
+Per **implement** task. Coding workers: `subagent_type: generalPurpose`, pin `model`, `run_in_background: true`. Worktree: `shell`. Explore: `explore`.
 
 Record `git rev-parse HEAD` as fixed point in board `Notes` before the first implement spawn.
 
 ## Cycle
 
-1. **Implement** — per [`models.md`](models.md): `composer-2.5` mechanical, `glm-5.2-high` UI, `claude-sonnet-5-thinking-high` API/copy; `Skill: implement`
-2. **Verify** — `composer-2.5`, `shell` subagent: run project's lint / test / typecheck
-3. **Review** — fresh worker each round, `claude-opus-4-8-thinking-high`, `Skill: code-review`
-4. `REVIEW_APPROVED` → **gate** (board shows verify pass + review approved) → **commit** worker
-5. `REVIEW_CHANGES_REQUIRED` → **fix-review** worker, `Skill: tdd` → step 2
+1. **Implement** — per [`models.md`](models.md): `composer-2.5` mechanical, `glm-5.2-high` UI, `claude-sonnet-5-thinking-high` API/copy; `Skill: implement`. The implementer runs lint / test / typecheck before reporting `DONE`.
+2. **Review** — fresh worker each round, `claude-opus-4-8-thinking-high`, `Skill: code-review`
+3. `REVIEW_APPROVED` → **gate** (board shows verify pass + review approved) → **commit** worker
+4. `REVIEW_CHANGES_REQUIRED` → **fix-review** worker, `Skill: tdd` (re-verify before `DONE`) → step 2
 
 Never resume the implementer for review — always a new worker.
 
@@ -36,10 +35,11 @@ Working directory:
 <worktree path — required>
 
 Constraints:
+- Run the project's lint / test / typecheck; fix failures before finishing
 - Stop before /code-review and commit
 
 Output:
-Summary, Skills loaded, git diff stat.
+Summary, Skills loaded, git diff stat, verify result (lint / test / typecheck).
 STATUS: DONE | DONE_WITH_CONCERNS | NEEDS_CONTEXT | BLOCKED
 ```
 
@@ -53,7 +53,7 @@ Model: claude-opus-4-8-thinking-high
 
 Fixed point: <SHA>
 Spec: <full specification>
-Verify result: <verify worker summary>
+Verify result: <from implementer output>
 
 Output per code-review skill, then:
 STATUS: REVIEW_APPROVED | REVIEW_CHANGES_REQUIRED
@@ -75,8 +75,11 @@ Changes:
 Skills loaded:
 <from implementer>
 
+Constraints:
+- Re-run lint / test / typecheck; fix failures before finishing
+
 Output:
-Summary of edits.
+Summary of edits, verify result (lint / test / typecheck).
 STATUS: DONE | BLOCKED
 ```
 

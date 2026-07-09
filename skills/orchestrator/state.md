@@ -36,7 +36,7 @@ Keep rows for `done` and `cancelled` tasks until close — then move outcomes in
 
 ## Phases
 
-`implement` → `verify` → `review` → `fix` → `review` … → `gate` → `commit` → `done`
+`implement` (includes verify) → `review` → `fix` → `review` … → `gate` → `commit` → `done`
 
 ## Gate
 

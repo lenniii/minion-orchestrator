@@ -69,10 +69,11 @@ When axes conflict: **Intelligence > Taste > Cost**. Cost is the tie-breaker onl
 | Review | `claude-opus-4-8-thinking-high` | Intel 10, +7 pts SWE-Pro over field |
 | Optional second review opinion | `glm-5.2-high` | Intel 7, cheaper than GPT-5.5 |
 | Commit, issues, trivial docs | `glm-5.2-high` | Cost 9, sufficient for admin |
-| Verify — lint, test, typecheck | `composer-2.5` (`shell` subagent) | Cost 10 |
 | Explore — read-only map | `composer-2.5` (`explore` subagent) | Cost 10 |
 
-Use `composer-2.5-fast` when verify/explore latency matters — same intelligence, 6× token price.
+Implementers run lint / test / typecheck before `DONE` — no separate verify spawn.
+
+Use `composer-2.5-fast` when explore latency matters — same intelligence, 6× token price.
 
 Escalate **one tier** on mediocre output, verify failure, or `BLOCKED`:
 

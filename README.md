@@ -36,7 +36,7 @@ Task state is posted as a **board** table in chat — updated after every spawn 
 | User-facing API / copy | `claude-sonnet-5-thinking-high` |
 | Review | `claude-opus-4-8-thinking-high` |
 | Commit / issues | `glm-5.2-high` |
-| Verify / explore | `composer-2.5` (use `composer-2.5-fast` if latency matters) |
+| Explore | `composer-2.5` (use `composer-2.5-fast` if latency matters) |
 
 Details: `skills/orchestrator/models.md`.
 
@@ -44,7 +44,7 @@ Details: `skills/orchestrator/models.md`.
 
 ```
 decompose → spawn workers (background, `generalPurpose`)
-  → verify (`shell`) → review (fresh Opus worker)
+  → implement (includes verify) → review (fresh Opus worker)
   → fix-review → … → gate → commit
 ```
 
