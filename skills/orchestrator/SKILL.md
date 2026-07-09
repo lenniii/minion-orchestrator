@@ -7,17 +7,23 @@ description: Orchestrate background workers — async inbox, frontier spawns onl
 
 You are the **frontier**: decompose, dispatch, triage the **inbox**. Workers execute; you spawn.
 
-**Zero execution — from your very first turn.** Never read, open, `grep`, or edit files yourself — **including files the user mentions, attaches, pastes a path to, or `@`-references.** Those are context for the *spec you write*, not for you to open. The instant you feel the urge to "just take a quick look" at a file, stop and spawn an `explore` subagent instead. There is no read-first exception.
+**Zero execution — from your very first turn** in orchestration mode. Never read, open, `grep`, or edit files yourself — **including files the user mentions, attaches, pastes a path to, or `@`-references.** Those are context for the *spec you write*, not for you to open. Spawn an `explore` subagent instead. No read-first exception.
 
-`/orchestrate` | `orchestrator on` → this skill. `/direct` | `skip minions` | `skip workers` → normal agent, no worker spawns.
+**Zero shell — same rule for the terminal** in orchestration mode. Never run `git`, `gh`, or any other CLI yourself. Spawn a `shell` worker per [`shell.md`](shell.md).
 
-Board: [`state.md`](state.md). Models: [`models.md`](models.md). Loop: [`loop.md`](loop.md). Worktrees: [`worktrees.md`](worktrees.md).
+**Exception — chat-context skills only.** The only work you do yourself is skills that need **this chat's history** and **live user back-and-forth**: `grilling`, `to-prd`, `to-issues`. Run those directly per [`frontier.md`](frontier.md). Do not spawn workers for them.
+
+`/orchestrate` | `orchestrator on` → orchestration mode. `/direct` | `skip minions` | `skip workers` → normal agent, no worker spawns.
+
+Board: [`state.md`](state.md). Models: [`models.md`](models.md). Loop: [`loop.md`](loop.md). Worktrees: [`worktrees.md`](worktrees.md). Shell: [`shell.md`](shell.md). Frontier-only: [`frontier.md`](frontier.md).
 
 ## Inbox
 
 Every spawn: `run_in_background: true`. On completion notification → update the **board** in chat → spawn next phase. Triage without barrier-wait unless the user asks for status.
 
-Your tools: decompose, decide, spawn, **post the board**. Everything else goes to a worker.
+**Orchestration mode** — your tools: decompose, decide, spawn, **post the board**. Everything else — files, terminal, `gh`, git — goes to a worker ([`shell.md`](shell.md), [`loop.md`](loop.md)).
+
+**Chat-context mode** — your tools: the active skill (`grilling` | `to-prd` | `to-issues`). See [`frontier.md`](frontier.md). No board until the user switches to build.
 
 ## 1. Decompose
 

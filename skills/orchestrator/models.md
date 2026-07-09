@@ -70,6 +70,8 @@ When axes conflict: **Intelligence > Taste > Cost**. Cost is the tie-breaker onl
 | Optional second review opinion | `glm-5.2-high` | Intel 7, cheaper than GPT-5.5 |
 | Commit, issues, trivial docs | `glm-5.2-high` | Cost 9, sufficient for admin |
 | Explore — read-only map | `composer-2.5` (`explore` subagent) | Cost 10 |
+| Shell — git, `gh`, mechanical CLI | `composer-2.5` (`shell` subagent) | Cost 10 |
+| Shell — merge conflicts, `gh` judgment calls | `glm-5.2-high` (`shell` subagent) | Taste 9 |
 
 Implementers run lint / test / typecheck before `DONE` — no separate verify spawn.
 

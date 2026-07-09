@@ -56,10 +56,10 @@ Spawn `composer-2.5` `shell` subagent:
 
 ### Option 2 — stacked PRs
 
-Spawn one `composer-2.5` `shell` worker per task (or one worker with ordered steps), in dependency order:
+Spawn one `composer-2.5` `shell` worker per task (or one worker with ordered steps), in dependency order. The frontier does **not** run `git push` or `gh pr create` — see [`shell.md`](shell.md).
 
 - Push each task branch
-- Open PR: first PR targets default base; each next PR targets the previous task's branch
+- `gh pr create`: first PR targets default base; each next PR targets the previous task's branch
 - PR title/body references issue ID when present
 - Output: PR URLs in task order
 

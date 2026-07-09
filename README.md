@@ -48,7 +48,7 @@ decompose → spawn workers (background, `generalPurpose`)
   → fix-review → … → gate → commit
 ```
 
-Loop details: `skills/orchestrator/loop.md`. Worktrees: `skills/orchestrator/worktrees.md`.
+Loop details: `skills/orchestrator/loop.md`. Worktrees: `skills/orchestrator/worktrees.md`. Shell / `gh`: `skills/orchestrator/shell.md`. Frontier-only (grilling, PRD, issues): `skills/orchestrator/frontier.md`.
 
 ## License
 

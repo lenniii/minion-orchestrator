@@ -26,7 +26,7 @@ Lead with `## Board`, then a table:
 **Columns**
 
 - **ID** — short label (`T1`, `auth-fix`)
-- **Type** — `implement` | `review` | `fix-review` | `docs` | `commit` …
+- **Type** — `implement` | `review` | `fix-review` | `shell` | `docs` | `commit` …
 - **Phase** — current step in [`loop.md`](loop.md)
 - **Status** — `pending` | `in-flight` | `done` | `blocked` | `paused` | `cancelled`
 - **Blocked by** — task IDs that must be `done` before this task spawns (`—` if none)
