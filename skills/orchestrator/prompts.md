@@ -60,7 +60,7 @@ Constraints:
 - Insufficient context → STATUS: NEEDS_CONTEXT (one line)
 
 Output:
-Summary (≤2 sentences), diff stat, verify result.
+Summary (≤2 sentences), `git diff <fixed-point> --stat`, verify result.
 STATUS: DONE | DONE_WITH_CONCERNS | NEEDS_CONTEXT | BLOCKED
 ```
 
@@ -81,10 +81,20 @@ Worktree (absolute):
 <worktree path>
 
 Constraints:
-- **Scoped:** all git (diff, log, rev-parse) — Shell `working_directory` = worktree path ([`worktrees.md#scoped-cwd`](worktrees.md))
+- **Scoped:** all git — Shell `working_directory` = worktree path ([`worktrees.md#scoped-cwd`](worktrees.md))
+- **Pre-commit review** — overrides code-review step 1 diff command. Implement has not committed; use working-tree diff:
+  - `git diff <fixed-point> --stat` and `git diff <fixed-point>`
+  - Do **not** use `git diff <fixed-point>...HEAD` (empty when HEAD == fixed point)
 
-Output per code-review skill, then:
-STATUS: REVIEW_APPROVED | REVIEW_CHANGES_REQUIRED
+Preflight (mandatory, in order — stop on first failure):
+1. Shell `working_directory` = worktree path; `pwd && git branch --show-current`
+2. `git rev-parse <fixed-point>`
+3. `git diff <fixed-point> --stat` — must be non-empty and match Changed files
+4. If step 3 empty: re-run once with `working_directory` set; if still empty → `STATUS: BLOCKED` (one line: cwd, branch, fixed point, implementer stat)
+5. **Do not** search branches, reflog, other worktrees, parent repos, or grep for feature terms to "find" the diff
+
+Output per code-review skill (using diff from step 3), then:
+STATUS: REVIEW_APPROVED | REVIEW_CHANGES_REQUIRED | BLOCKED
 Changes:
 1. ...
 ```
@@ -174,11 +184,11 @@ Working directory (absolute):
 <repo root>
 
 Branch name: <slug>
-Base branch: <default branch>
+Base ref: <origin/<base-branch> | <blocker-branch> — see worktrees.md Dependencies>
 
 Commands:
 git fetch origin
-git worktree add .worktrees/<slug> -b <slug> origin/<base>
+git worktree add .worktrees/<slug> -b <slug> <Base ref>
 
 Constraints:
 - **Scoped:** Shell `working_directory` = repo root above

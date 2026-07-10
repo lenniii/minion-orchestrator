@@ -4,12 +4,12 @@
 
 Per **implement** task: `subagent_type: generalPurpose`, pin `model`, `run_in_background: true`.
 
-Record `git rev-parse HEAD` in board `Notes` before first implement spawn.
+Record `fixed:` (`git rev-parse HEAD` in the **worktree**) in board Notes before first implement spawn.
 
 ## Cycle
 
 1. **Implement** — model per [`models.md`](models.md); `Skill: implement`; prompt [`prompts.md#implement`](prompts.md)
-2. **Review** — fresh worker; `Skill: code-review`; prompt [`prompts.md#review`](prompts.md)
+2. **Review** — fresh worker; `Skill: code-review`; prompt [`prompts.md#review`](prompts.md). Pre-commit: reviewer diffs working tree vs `fixed:` (`git diff <fixed-point>`), not `...HEAD`
 3. `REVIEW_APPROVED` → gate → **commit** ([`prompts.md#commit`](prompts.md))
 4. `REVIEW_CHANGES_REQUIRED` → **fix-review** ([`prompts.md#fix-review`](prompts.md)) → step 2
 

@@ -35,7 +35,7 @@ Split the request into tasks. Post initial **board** ([`state.md`](state.md)). P
 
 Spawn only **unblocked** tasks. Batch independent tasks in one turn.
 
-Before first implement: worktree per [`worktrees.md`](worktrees.md). Pin model per [`models.md`](models.md). Prompt per [`prompts.md`](prompts.md). Delta-update board ([`state.md`](state.md)).
+Before first implement: worktree per [`worktrees.md`](worktrees.md) — **stacked** tasks base off the blocker's branch, not `origin/main`. Pin model per [`models.md`](models.md). Prompt per [`prompts.md`](prompts.md). Delta-update board ([`state.md`](state.md)).
 
 **Done when:** every unblocked task is `in-flight` or waiting on a blocker; or you escalated / asked the user.
 
@@ -51,6 +51,7 @@ On each notification — read **STATUS** only; one-line note to board Notes; do 
 | `BLOCKED` | escalate one tier ([`models.md`](models.md)), split, or ask user |
 | `REVIEW_APPROVED` | gate → commit |
 | `REVIEW_CHANGES_REQUIRED` | fix-review → review again |
+| `BLOCKED` (review, empty diff) | re-spawn review with worktree path + `fixed:` from board; do not spawn explore |
 
 Cap review at 5 rounds — split or ask. When a task is `done`, spawn newly unblocked tasks (worktree first).
 

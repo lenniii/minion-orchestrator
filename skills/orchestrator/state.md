@@ -16,7 +16,7 @@ Live task queue — **posted in chat**. User reads status here.
 |----|------|-------|--------|------------|-------|
 | T1 | implement | review | in-flight | — | `add-auth` · `/abs/.worktrees/add-auth` · #42 · spawn abc |
 
-**Notes:** worktree, branch, issue #, model, round, spawn ID, verify result, commit SHA.
+**Notes:** worktree, branch, `based-on:` (blocker ID if stacked), `fixed:` (base SHA in worktree), issue #, model, round, spawn ID, verify result, commit SHA.
 
 Keep `done` / `cancelled` rows until close → close summary → drop board.
 
