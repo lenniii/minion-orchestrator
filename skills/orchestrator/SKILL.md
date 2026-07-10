@@ -55,7 +55,7 @@ On each notification — **STATUS** line only; one board Notes line. Worker body
 | `BLOCKED` (review, empty log) | respawn review with worktree path + `fixed:` from board |
 | `DONE` (commit) | task `done` |
 
-Cap review at 2 rounds (rename/docs: 1) — split or ask. After 8 inbox notifications: post full board, tell user to continue in a **new chat**.
+Fix-review loops until `REVIEW_APPROVED` — no round cap. After 8 inbox notifications: post full board, tell user to continue in a **new chat**.
 
 **Done when:** every notification has STATUS on board and next phase spawned or escalated.
 

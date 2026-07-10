@@ -22,7 +22,7 @@ Record worker model in board `Notes`.
 
 Composer = first-party pool (exempt Enterprise $0.25/M token rate). Other models = pooled API + token rate.
 
-Implementers verify (lint / test / typecheck) before `DONE` — no separate verify spawn.
+**Verify gate** — implementers and fix-review run lint / test / typecheck before `DONE`; reviewers do not. No separate verify spawn.
 
 `composer-2.5-fast` — explore latency only; 6× token price.
 

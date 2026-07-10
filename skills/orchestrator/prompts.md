@@ -55,7 +55,7 @@ Constraints:
 - Non-composer Model + context beyond Files → ONE explore (composer-2.5), then edit
 - Composer Model → Read/Grep on Files first; explore only for cross-module gaps
 - Max 1 explore per task
-- Lint / test / typecheck before DONE
+- **Verify gate:** lint / test / typecheck must pass before `DONE` — work is not done until verify passes
 - **Commit** before DONE — `git add` task files, conventional message referencing issue ID. Do not push.
 - Stop before review — orchestrator spawns review; do not run `/code-review`
 - Insufficient context → STATUS: NEEDS_CONTEXT (one line)
@@ -83,6 +83,7 @@ Worktree (absolute):
 
 Constraints:
 - **Scoped:** all git — Shell `working_directory` = worktree path ([`worktrees.md#scoped-cwd`](worktrees.md))
+- Do not run lint / test / typecheck — implementer passed verify gate before `DONE`; `Verify result` is informational only ([`models.md`](models.md))
 - Diff committed work per code-review step 1:
   - `git diff <fixed-point>...HEAD` and `git log <fixed-point>..HEAD --oneline`
 - If `git diff HEAD --stat` is non-empty (fix-review round): also review `git diff HEAD`
@@ -118,7 +119,7 @@ Working directory (absolute):
 Constraints:
 - **Scoped:** every Shell call — `working_directory` = path above ([`worktrees.md#scoped-cwd`](worktrees.md))
 - Edit only reviewer files (+ direct fixes)
-- Re-run lint / test / typecheck
+- **Verify gate:** re-run lint / test / typecheck before `DONE`
 - Do not commit — post-review commit handles it
 
 Output:
