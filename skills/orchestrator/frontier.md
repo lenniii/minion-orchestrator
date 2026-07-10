@@ -12,11 +12,11 @@
 | **User Q&A** | Confirm seams, slice granularity, approve/reject drafts — one question per turn |
 | **Dispatch** | Decompose, write spawn specs, triage STATUS + one line, post board |
 
+Sol spawns workers only — no `ReadFile`, `Grep`, `Shell`, or repo reads. Paths in spawn `Files:`; issue bodies via shell worker or issue ref in spec.
+
 ## Workers handle everything else
 
 Files, explore, CLI, synthesis, implement, review, commit, publish → spawn per [`models.md`](models.md) [`prompts.md`](prompts.md) [`shell.md`](shell.md).
-
-Put paths in task `Files:`; issue bodies via `shell` fetch or issue ref in spec — not Sol reads.
 
 PRD / issues synthesis → Terra worker when context fits spawn prompt ([`prompts.md`](prompts.md)). Sol quizzes drafts; `shell` publishes after approval.
 

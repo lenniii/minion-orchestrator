@@ -41,21 +41,25 @@ Before first implement: worktree per [`worktrees.md`](worktrees.md) — **stacke
 
 ## 3. Triage inbox
 
-On each notification — read **STATUS** only; one-line note to board Notes; do not quote worker body:
+On each notification — **STATUS** line only; one board Notes line. Worker body stays unread.
 
 | STATUS | Next |
 |--------|------|
-| `DONE` | review → gate → commit per [`loop.md`](loop.md) |
-| `DONE_WITH_CONCERNS` | accept or re-spawn |
-| `NEEDS_CONTEXT` | re-spawn implement with gap in `Spec` / `Files` |
-| `BLOCKED` | escalate one tier ([`models.md`](models.md)), split, or ask user |
-| `REVIEW_APPROVED` | gate → commit |
+| `DONE` (implement) | commit SHA on board → spawn review per [`loop.md`](loop.md) |
+| `DONE` (implement, no SHA) | respawn implement — commit before `DONE` |
+| `DONE_WITH_CONCERNS` | accept or respawn |
+| `NEEDS_CONTEXT` | respawn implement with gap in `Spec` / `Files` |
+| `BLOCKED` | respawn (escalate tier per [`models.md`](models.md)), split, or ask user — never `resume` |
+| `REVIEW_APPROVED` | gate → final commit |
 | `REVIEW_CHANGES_REQUIRED` | fix-review → review again |
-| `BLOCKED` (review, empty diff) | re-spawn review with worktree path + `fixed:` from board; do not spawn explore |
+| `BLOCKED` (review, empty log) | respawn review with worktree path + `fixed:` from board |
+| `DONE` (commit) | task `done` |
 
-Cap review at 5 rounds — split or ask. When a task is `done`, spawn newly unblocked tasks (worktree first).
+Cap review at 2 rounds (rename/docs: 1) — split or ask. After 8 inbox notifications: post full board, tell user to continue in a **new chat**.
 
 **Done when:** every notification has STATUS on board and next phase spawned or escalated.
+
+When a task is `done`, spawn newly unblocked tasks (worktree first).
 
 ## 4. Close
 
@@ -65,4 +69,4 @@ When nothing `in-flight`: close summary (bullets — done, blocked, SHAs, branch
 
 ## Steering
 
-`what's running?` → delta or full board. `steer <id>: <instruction>` → resume spawn ID. `stop task <id>` → `cancelled`.
+`what's running?` → delta or full board. `steer <id>: <instruction>` → respawn with instruction in `Spec` ([`loop.md#respawn`](loop.md)). `stop task <id>` → `cancelled`.

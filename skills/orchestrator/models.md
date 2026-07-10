@@ -12,9 +12,9 @@ Record worker model in board `Notes`.
 | Work | Model |
 |------|-------|
 | Bulk / mechanical implement | `composer-2.5` |
-| User-facing UI | `glm-5.2-high` |
-| Hard implement / API / copy / PRD / issues | `gpt-5.6-terra-extra-high` |
-| Review | `claude-opus-4-8-thinking-high` |
+| Complex implement / user-facing UI | `glm-5.2-high` |
+| Review | `gpt-5.6-terra-extra-high` |
+| PRD / issues synthesis | `gpt-5.6-terra-extra-high` |
 | Commit | `composer-2.5` |
 | PR / `gh` / worktrees / push / issue fetch | `composer-2.5` (`shell`) |
 | Minion explore (delegated) | `composer-2.5` (`explore`) |
@@ -30,9 +30,9 @@ Implementers verify (lint / test / typecheck) before `DONE` — no separate veri
 
 One tier on mediocre output, verify failure, or `BLOCKED`:
 
-`composer-2.5` → `gpt-5.6-terra-extra-high` → split or ask user.
+`composer-2.5` → `glm-5.2-high` → split or ask user.
 
-UI tasks → `glm-5.2-high` branch; do not escalate non-UI to GLM.
+Complex implement stays on `glm-5.2-high`; respawn fresh — never `resume` ([`loop.md#respawn`](loop.md)).
 
 Never escalate to Sol — frontier only.
 

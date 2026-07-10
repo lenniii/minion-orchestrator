@@ -45,7 +45,7 @@ Read/Grep may use paths under `.worktrees/<slug>/` from workspace root; still **
 
 **Preflight** (first Shell call per spawn): `pwd && git branch --show-current && git rev-parse HEAD` with `working_directory` set. **Done when** pwd is the worktree and branch matches board `branch:`.
 
-**Review diff trap:** `git diff <fixed>...HEAD` is empty when implement has not committed (HEAD still at `fixed:`). Reviewers use `git diff <fixed>` from the worktree — see [`prompts.md#review`](prompts.md). Empty diff is not a signal to search the repo; `STATUS: BLOCKED`.
+Implementers **commit** before `DONE`. Reviewers diff commits since `fixed:` (`git diff <fixed>...HEAD`). Fix-review leaves changes uncommitted; post-review **commit** is the second commit — see [`loop.md`](loop.md).
 
 ## Notes fields
 

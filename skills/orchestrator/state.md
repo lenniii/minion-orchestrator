@@ -6,7 +6,7 @@ Live task queue — **posted in chat**. User reads status here.
 
 **Delta board** (changed rows + one-line summary) — default after spawn and triage.
 
-**Full board** — decompose, steer / stop / pause / resume, close, `what's running?`.
+**Full board** — decompose, steer / stop, close, `what's running?`, new-chat handoff.
 
 ## Format
 
@@ -22,8 +22,8 @@ Keep `done` / `cancelled` rows until close → close summary → drop board.
 
 ## Phases
 
-`implement` → `review` → `fix` → `review` … → `gate` → `commit` → `done`
+`implement` (+commit) → `review` → `fix` → `review` … → `gate` → `commit` (final) → `done`
 
 ## Gate
 
-After `REVIEW_APPROVED`: board shows verify pass + review approved → spawn commit ([`prompts.md#commit`](prompts.md)).
+After `REVIEW_APPROVED`: board shows verify pass + review approved → spawn **final commit** ([`prompts.md#commit`](prompts.md)) for fix-review changes or noop if clean.

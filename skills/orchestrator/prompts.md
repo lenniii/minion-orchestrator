@@ -26,7 +26,7 @@ Constraints:
 - Answer only; ≤30 lines
 
 Output:
-Summary (modules, entry points, patterns, test commands as relevant).
+≤15 lines. Summary + STATUS line only — no tables, no markdown essays.
 STATUS: DONE | BLOCKED
 ```
 
@@ -56,11 +56,12 @@ Constraints:
 - Composer Model → Read/Grep on Files first; explore only for cross-module gaps
 - Max 1 explore per task
 - Lint / test / typecheck before DONE
-- Stop before review and commit
+- **Commit** before DONE — `git add` task files, conventional message referencing issue ID. Do not push.
+- Stop before review — orchestrator spawns review; do not run `/code-review`
 - Insufficient context → STATUS: NEEDS_CONTEXT (one line)
 
 Output:
-Summary (≤2 sentences), `git diff <fixed-point> --stat`, verify result.
+One line: commit SHA + message, verify one-liner, diff stat.
 STATUS: DONE | DONE_WITH_CONCERNS | NEEDS_CONTEXT | BLOCKED
 ```
 
@@ -70,11 +71,11 @@ STATUS: DONE | DONE_WITH_CONCERNS | NEEDS_CONTEXT | BLOCKED
 Task ID: <id>
 Type: review
 Skill: code-review
-Model: claude-opus-4-8-thinking-high
+Model: gpt-5.6-terra-extra-high
 
 Fixed point: <SHA>
 Spec: <acceptance criteria for this task only>
-Changed files: <from implementer diff stat>
+Commits since fixed: <from implementer git log>
 Verify result: <one line>
 
 Worktree (absolute):
@@ -82,18 +83,19 @@ Worktree (absolute):
 
 Constraints:
 - **Scoped:** all git — Shell `working_directory` = worktree path ([`worktrees.md#scoped-cwd`](worktrees.md))
-- **Pre-commit review** — overrides code-review step 1 diff command. Implement has not committed; use working-tree diff:
-  - `git diff <fixed-point> --stat` and `git diff <fixed-point>`
-  - Do **not** use `git diff <fixed-point>...HEAD` (empty when HEAD == fixed point)
+- Diff committed work per code-review step 1:
+  - `git diff <fixed-point>...HEAD` and `git log <fixed-point>..HEAD --oneline`
+- If `git diff HEAD --stat` is non-empty (fix-review round): also review `git diff HEAD`
 
 Preflight (mandatory, in order — stop on first failure):
 1. Shell `working_directory` = worktree path; `pwd && git branch --show-current`
 2. `git rev-parse <fixed-point>`
-3. `git diff <fixed-point> --stat` — must be non-empty and match Changed files
-4. If step 3 empty: re-run once with `working_directory` set; if still empty → `STATUS: BLOCKED` (one line: cwd, branch, fixed point, implementer stat)
+3. `git log <fixed-point>..HEAD --oneline` OR `git diff HEAD --stat` — at least one must be non-empty
+4. If step 3 empty: re-run once with `working_directory` set; if still empty → `STATUS: BLOCKED` (one line: cwd, branch, fixed point)
 5. **Do not** search branches, reflog, other worktrees, parent repos, or grep for feature terms to "find" the diff
 
-Output per code-review skill (using diff from step 3), then:
+Output:
+STATUS line first. If `REVIEW_CHANGES_REQUIRED`: one blocking bullet under `Changes:` — no prose review essay.
 STATUS: REVIEW_APPROVED | REVIEW_CHANGES_REQUIRED | BLOCKED
 Changes:
 1. ...
@@ -117,13 +119,16 @@ Constraints:
 - **Scoped:** every Shell call — `working_directory` = path above ([`worktrees.md#scoped-cwd`](worktrees.md))
 - Edit only reviewer files (+ direct fixes)
 - Re-run lint / test / typecheck
+- Do not commit — post-review commit handles it
 
 Output:
-Summary, verify result.
+One line: verify result + `git diff HEAD --stat`.
 STATUS: DONE | BLOCKED
 ```
 
 ## commit
+
+Post-review — **second commit**. Runs after `REVIEW_APPROVED`.
 
 ```
 Task ID: <id>
@@ -131,17 +136,21 @@ Type: commit
 Skill: implement
 Model: composer-2.5
 
+Fixed point: <SHA>
+Issue: <#123, if any>
+
 Working directory (absolute):
 <worktree path>
 
-Commit only — git add + conventional message referencing issue ID.
-git add only this task's files. Do not push unless spec says to.
+Commit fix-review changes — git add task files + conventional message referencing issue ID.
+If working tree clean after approval: `STATUS: DONE` with final SHA (implement commit stands).
+Do not push unless spec says to.
 
 Constraints:
 - **Scoped:** every Shell/git call — `working_directory` = path above ([`worktrees.md#scoped-cwd`](worktrees.md))
 
 Output:
-Commit SHA and message.
+Commit SHA (or "unchanged" + HEAD SHA).
 STATUS: DONE
 ```
 
@@ -167,7 +176,7 @@ Constraints:
 - Do not push / open PRs unless spec says
 
 Output:
-Summary, key output, URLs if any.
+≤5 lines: outcome + key command output. No diagnostic essays.
 STATUS: DONE | BLOCKED
 ```
 
@@ -194,7 +203,7 @@ Constraints:
 - **Scoped:** Shell `working_directory` = repo root above
 
 Output:
-Absolute worktree path, branch name, base SHA.
+Worktree path, branch, base SHA — one line each.
 STATUS: DONE | BLOCKED
 ```
 
