@@ -4,6 +4,8 @@
 
 **Dispatch-only frontier** — spawn `shell` workers for every CLI touch. Prompt: [`prompts.md#shell`](prompts.md).
 
+**Scoped** — Shell tool `working_directory` must match spawn absolute path ([`worktrees.md#scoped-cwd`](worktrees.md)). Prompt text alone does not scope cwd.
+
 ## Delegate
 
 | Category | Examples |

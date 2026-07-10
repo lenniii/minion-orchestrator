@@ -15,7 +15,7 @@ Record `git rev-parse HEAD` in board `Notes` before first implement spawn.
 
 Fresh reviewer each round — never resume implementer for review.
 
-One worktree per task before step 1 — [`worktrees.md`](worktrees.md).
+One worktree per task before step 1 — [`worktrees.md`](worktrees.md). Board Notes: absolute `worktree:` path before first implement spawn.
 
 ## Repo discovery
 

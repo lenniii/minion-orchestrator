@@ -39,6 +39,8 @@ grill (Sol, tight)
 
 Sol writes spawn specs; minions explore if needed ([`loop.md`](loop.md)). Do not spawn explore from frontier for implement work.
 
+Worktree spawns: absolute path + **scoped** Shell cwd ([`worktrees.md#scoped-cwd`](worktrees.md)).
+
 ## Mode detection
 
 **Planning** — deliverable is PRD or issues, not shipped code.

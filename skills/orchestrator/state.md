@@ -14,7 +14,7 @@ Live task queue — **posted in chat**. User reads status here.
 
 | ID | Type | Phase | Status | Blocked by | Notes |
 |----|------|-------|--------|------------|-------|
-| T1 | implement | review | in-flight | — | `add-auth` · `.worktrees/add-auth` · #42 · spawn abc |
+| T1 | implement | review | in-flight | — | `add-auth` · `/abs/.worktrees/add-auth` · #42 · spawn abc |
 
 **Notes:** worktree, branch, issue #, model, round, spawn ID, verify result, commit SHA.
 

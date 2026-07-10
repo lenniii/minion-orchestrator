@@ -11,7 +11,7 @@ Task ID: <id>
 Type: explore
 Model: composer-2.5
 
-Working directory:
+Working directory (absolute):
 <repo root or worktree path>
 
 Question:
@@ -22,6 +22,7 @@ Scope (optional):
 
 Constraints:
 - Read-only
+- **Scoped:** Shell `working_directory` = path above ([`worktrees.md#scoped-cwd`](worktrees.md))
 - Answer only; ≤30 lines
 
 Output:
@@ -45,10 +46,11 @@ Files:
 
 Issue: <#123 title, if any>
 
-Working directory:
+Working directory (absolute):
 <worktree path — required>
 
 Constraints:
+- **Scoped:** every Shell call — `working_directory` = path above; preflight pwd/branch/HEAD ([`worktrees.md#scoped-cwd`](worktrees.md))
 - Edit only Files (+ direct imports/callers)
 - Non-composer Model + context beyond Files → ONE explore (composer-2.5), then edit
 - Composer Model → Read/Grep on Files first; explore only for cross-module gaps
@@ -75,6 +77,12 @@ Spec: <acceptance criteria for this task only>
 Changed files: <from implementer diff stat>
 Verify result: <one line>
 
+Worktree (absolute):
+<worktree path>
+
+Constraints:
+- **Scoped:** all git (diff, log, rev-parse) — Shell `working_directory` = worktree path ([`worktrees.md#scoped-cwd`](worktrees.md))
+
 Output per code-review skill, then:
 STATUS: REVIEW_APPROVED | REVIEW_CHANGES_REQUIRED
 Changes:
@@ -92,10 +100,11 @@ Model: <same tier as implement>
 Changes:
 <verbatim from reviewer>
 
-Working directory:
+Working directory (absolute):
 <worktree path>
 
 Constraints:
+- **Scoped:** every Shell call — `working_directory` = path above ([`worktrees.md#scoped-cwd`](worktrees.md))
 - Edit only reviewer files (+ direct fixes)
 - Re-run lint / test / typecheck
 
@@ -112,11 +121,14 @@ Type: commit
 Skill: implement
 Model: composer-2.5
 
-Working directory:
+Working directory (absolute):
 <worktree path>
 
 Commit only — git add + conventional message referencing issue ID.
 git add only this task's files. Do not push unless spec says to.
+
+Constraints:
+- **Scoped:** every Shell/git call — `working_directory` = path above ([`worktrees.md#scoped-cwd`](worktrees.md))
 
 Output:
 Commit SHA and message.
@@ -130,7 +142,7 @@ Task ID: <id>
 Type: shell
 Model: composer-2.5
 
-Working directory:
+Working directory (absolute):
 <repo root or worktree>
 
 Spec:
@@ -140,6 +152,7 @@ Commands (if known):
 - <ordered list, or "figure out commands">
 
 Constraints:
+- **Scoped:** every Shell call — `working_directory` = path above ([`worktrees.md#scoped-cwd`](worktrees.md))
 - Do not edit source unless spec says (e.g. conflict resolution)
 - Do not push / open PRs unless spec says
 
@@ -150,10 +163,15 @@ STATUS: DONE | BLOCKED
 
 ## worktree-setup
 
+Runs from **repo root** (not the new worktree). Subsequent spawns use the worktree absolute path.
+
 ```
 Task ID: <id>
 Type: worktree-setup
 Model: composer-2.5
+
+Working directory (absolute):
+<repo root>
 
 Branch name: <slug>
 Base branch: <default branch>
@@ -162,8 +180,11 @@ Commands:
 git fetch origin
 git worktree add .worktrees/<slug> -b <slug> origin/<base>
 
+Constraints:
+- **Scoped:** Shell `working_directory` = repo root above
+
 Output:
-Worktree path, branch name, base SHA.
+Absolute worktree path, branch name, base SHA.
 STATUS: DONE | BLOCKED
 ```
 
