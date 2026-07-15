@@ -13,12 +13,12 @@ Record worker model in board `Notes`.
 |------|-------|
 | Bulk / mechanical implement | `composer-2.5` |
 | Complex implement / user-facing UI | `glm-5.2-high` |
-| Review | `gpt-5.6-terra-extra-high` |
-| PRD / issues synthesis | `gpt-5.6-terra-extra-high` |
+| Review | `gpt-5.6-terra-high` |
+| PRD / issues synthesis | `gpt-5.6-terra-high` |
 | Commit | `composer-2.5` |
 | PR / `gh` / worktrees / push / issue fetch | `composer-2.5` (`shell`) |
 | Minion explore (delegated) | `composer-2.5` (`explore`) |
-| Shell — merge conflicts, `gh` judgment | `gpt-5.6-terra-extra-high` (`shell`) |
+| Shell — merge conflicts, `gh` judgment | `gpt-5.6-terra-high` (`shell`) |
 
 Composer = first-party pool (exempt Enterprise $0.25/M token rate). Other models = pooled API + token rate.
 

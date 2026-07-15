@@ -24,7 +24,7 @@ Symlinks `skills/orchestrator/` into `~/.cursor/skills/orchestrator`. Re-run aft
 |------|-------|
 | Frontier | `gpt-5.6-sol-max` |
 | Mechanical / explore / commit / shell | `composer-2.5` |
-| Hard implement / PRD / issues | `gpt-5.6-terra-extra-high` |
+| Hard implement / PRD / issues | `gpt-5.6-terra-high` |
 | UI | `glm-5.2-high` |
 | Review | `claude-opus-4-8-thinking-high` |
 

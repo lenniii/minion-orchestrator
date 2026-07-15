@@ -71,7 +71,7 @@ STATUS: DONE | DONE_WITH_CONCERNS | NEEDS_CONTEXT | BLOCKED
 Task ID: <id>
 Type: review
 Skill: code-review
-Model: gpt-5.6-terra-extra-high
+Model: gpt-5.6-terra-high
 
 Fixed point: <SHA>
 Spec: <acceptance criteria for this task only>
@@ -214,7 +214,7 @@ STATUS: DONE | BLOCKED
 Task ID: <id>
 Type: prd
 Skill: to-prd
-Model: gpt-5.6-terra-extra-high
+Model: gpt-5.6-terra-high
 
 Context:
 <grilling decisions, constraints — structured brief, not chat dump>
@@ -241,7 +241,7 @@ STATUS: DONE | NEEDS_USER_INPUT
 Task ID: <id>
 Type: issues
 Skill: to-issues
-Model: gpt-5.6-terra-extra-high
+Model: gpt-5.6-terra-high
 
 Approved plan:
 <PRD or spec>

@@ -15,7 +15,7 @@
 | **Package managers** | npm, pnpm, yarn, pip, cargo — when spec requires |
 | **Scripts** | make, ./scripts/*, just |
 
-**Model:** `composer-2.5` default. `gpt-5.6-terra-extra-high` for merge conflicts, `gh` judgment, PR base choice.
+**Model:** `composer-2.5` default. `gpt-5.6-terra-high` for merge conflicts, `gh` judgment, PR base choice.
 
 **Commit** (`git add` + message) — separate worker type [`prompts.md#commit`](prompts.md), not shell.
 
