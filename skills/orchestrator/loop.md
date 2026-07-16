@@ -30,7 +30,7 @@ Frontier puts context in spawn spec (`Spec`, `Files`, issue ref). Minion discove
 | Implement Model | Rule |
 |-----------------|------|
 | `composer-2.5` | Read/Grep on Files; one explore (composer) for cross-module gaps |
-| `glm-5.2-high` | Delegate discovery to explore (composer) before editing |
+| `cursor-grok-4.5-high` | Delegate discovery to explore (composer) before editing |
 
 Max 1 explore per task. `NEEDS_CONTEXT` → frontier re-spawns with gap in `Spec` / `Files`.
 

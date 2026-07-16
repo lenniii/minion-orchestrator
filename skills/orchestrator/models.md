@@ -12,7 +12,7 @@ Record worker model in board `Notes`.
 | Work | Model |
 |------|-------|
 | Bulk / mechanical implement | `composer-2.5` |
-| Complex implement / user-facing UI | `glm-5.2-high` |
+| Complex implement / user-facing UI | `cursor-grok-4.5-high` |
 | Review | `gpt-5.6-terra-high` |
 | PRD / issues synthesis | `gpt-5.6-terra-high` |
 | Commit | `composer-2.5` |
@@ -30,9 +30,9 @@ Composer = first-party pool (exempt Enterprise $0.25/M token rate). Other models
 
 One tier on mediocre output, verify failure, or `BLOCKED`:
 
-`composer-2.5` → `glm-5.2-high` → split or ask user.
+`composer-2.5` → `cursor-grok-4.5-high` → split or ask user.
 
-Complex implement stays on `glm-5.2-high`; respawn fresh — never `resume` ([`loop.md#respawn`](loop.md)).
+Complex implement stays on `cursor-grok-4.5-high`; respawn fresh — never `resume` ([`loop.md#respawn`](loop.md)).
 
 Never escalate to Sol — frontier only.
 
