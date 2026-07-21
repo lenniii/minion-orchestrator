@@ -16,13 +16,13 @@ Live task queue — **posted in chat**. User reads status here.
 |----|------|-------|--------|------------|-------|
 | T1 | implement | review | in-flight | — | `add-auth` · `/abs/.worktrees/add-auth` · #42 · spawn abc |
 
-**Notes:** worktree, branch, `based-on:` (blocker ID if stacked), `fixed:` (base SHA in worktree), issue #, model, round, spawn ID, verify result, commit SHA.
+**Notes:** worktree, branch, `based-on:` (blocker ID if stacked), `fixed:` (base SHA in worktree), issue #, model, `round:` (review count, max 5), spawn ID, verify result, commit SHA.
 
 Keep `done` / `cancelled` rows until close → close summary → drop board.
 
 ## Phases
 
-`implement` (+commit) → `review` → `fix` → `review` … → `gate` → `commit` (final) → `done`
+`implement` (+commit) → `review` → `fix` → `review` … (max 5 reviews) → `gate` → `commit` (final) → `done`
 
 ## Gate
 

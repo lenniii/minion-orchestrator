@@ -9,11 +9,11 @@ Record `fixed:` (`git rev-parse HEAD` in the **worktree**) in board Notes before
 ## Cycle
 
 1. **Implement** — model per [`models.md`](models.md); `Skill: implement`; prompt [`prompts.md#implement`](prompts.md). Implementer passes **verify gate** (lint / test / typecheck) and **commits** before `DONE`.
-2. **Review** — fresh worker; `Skill: code-review`; prompt [`prompts.md#review`](prompts.md). Diff commits since `fixed:` (`git diff <fixed-point>...HEAD`). Reviewer does not re-run verify — trust implementer's one-liner ([`models.md`](models.md)).
+2. **Review** — fresh worker; `Skill: code-review`; prompt [`prompts.md#review`](prompts.md). Diff commits since `fixed:` (`git diff <fixed-point>...HEAD`). Reviewer does not re-run verify — trust implementer's one-liner ([`models.md`](models.md)). Increment `round:` on board (1-based; first review is `round: 1`).
 3. `REVIEW_APPROVED` → gate → **commit** ([`prompts.md#commit`](prompts.md)) — second commit for fix-review changes, or noop if clean.
-4. `REVIEW_CHANGES_REQUIRED` → **fix-review** ([`prompts.md#fix-review`](prompts.md)) → step 2
+4. `REVIEW_CHANGES_REQUIRED` → if `round:` < 5: **fix-review** ([`prompts.md#fix-review`](prompts.md)) → step 2; if `round:` ≥ 5: escalate to user — stop the loop.
 
-Fresh reviewer each round — never resume implementer for review.
+**Max 5 reviews** per task. Fresh reviewer each round — never resume implementer for review.
 
 ## Respawn
 
