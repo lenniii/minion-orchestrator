@@ -84,6 +84,7 @@ Worktree (absolute):
 Constraints:
 - **Scoped:** all git — Shell `working_directory` = worktree path ([`worktrees.md#scoped-cwd`](worktrees.md))
 - Do not run lint / test / typecheck — implementer passed verify gate before `DONE`; `Verify result` is informational only ([`models.md`](models.md))
+- Run adversarial `/code-review` against fixed point; end with Metrics (scoring in code-review step 5)
 - Diff committed work per code-review step 1:
   - `git diff <fixed-point>...HEAD` and `git log <fixed-point>..HEAD --oneline`
 - If `git diff HEAD --stat` is non-empty (fix-review round): also review `git diff HEAD`
@@ -96,8 +97,15 @@ Preflight (mandatory, in order — stop on first failure):
 5. **Do not** search branches, reflog, other worktrees, parent repos, or grep for feature terms to "find" the diff
 
 Output:
-STATUS line first. If `REVIEW_CHANGES_REQUIRED`: one blocking bullet under `Changes:` — no prose review essay.
+STATUS line first, then Metrics (required — score per code-review step 5), then Changes if not approved.
+**Merge gate:** `REVIEW_APPROVED` iff Confidence ≥ 80 **and** Blocking = 0; else `REVIEW_CHANGES_REQUIRED`.
+If `REVIEW_CHANGES_REQUIRED`: blocking bullets under `Changes:` (cite axis) — no prose review essay.
 STATUS: REVIEW_APPROVED | REVIEW_CHANGES_REQUIRED | BLOCKED
+## Metrics
+Confidence to merge: <0–100>
+Standards: <0–100> (<n> findings: <hard> hard, <judgement> judgement)
+Spec: <0–100> (<n> findings) | skipped
+Blocking: <count>
 Changes:
 1. ...
 ```
@@ -235,6 +243,38 @@ Full PRD markdown.
 STATUS: DONE | NEEDS_USER_INPUT
 ```
 
+## spec
+
+Main-flow sibling of `prd` — ask-matt path uses `/to-spec` then `/to-tickets`.
+
+```
+Task ID: <id>
+Type: spec
+Skill: to-spec
+Model: gpt-5.6-terra-high
+
+Context:
+<grilling decisions, constraints, linked wayfinder decisions — structured brief, not chat dump>
+
+Explore summary:
+<from explore worker, or "none">
+
+Seams (if pre-agreed):
+<list, or "propose at highest existing seam">
+
+Constraints:
+- Synthesize — do not interview user (frontier confirms seams)
+- Prefer existing seams; propose new ones only at the highest point; ideal count is one
+- Do not publish
+- Unclear seams → STATUS: NEEDS_USER_INPUT
+- Use project glossary / ADR vocabulary from explore summary
+
+Output:
+1. Proposed seams (short list for frontier confirm)
+2. Full spec markdown (to-spec template: Problem, Solution, User Stories, Implementation Decisions, Testing Decisions, Out of Scope, Further Notes)
+STATUS: DONE | NEEDS_USER_INPUT
+```
+
 ## issues
 
 ```
@@ -257,4 +297,140 @@ Constraints:
 Output:
 Numbered slices (title, blocked-by, stories) + issue body each.
 STATUS: DONE | NEEDS_USER_INPUT
+```
+
+## tickets
+
+Main-flow sibling of `issues` — ask-matt path after an approved `/to-spec`.
+
+```
+Task ID: <id>
+Type: tickets
+Skill: to-tickets
+Model: gpt-5.6-terra-high
+
+Approved spec:
+<full approved to-spec body, or path + explore summary that fetched it>
+
+Explore summary:
+<optional — glossary / ADR / prefactor notes>
+
+Constraints:
+- Draft tracer-bullet vertical slices — each demoable, one context window, with blocking edges
+- Prefactor tickets first when needed; wide refactors → expand–contract sequence (not forced vertical)
+- Do not quiz user; frontier confirms granularity / deps
+- Do not publish — skip to-tickets steps 4–5
+- No stale file paths or code snippets (prototype decision snippets OK if noted)
+
+Output:
+Numbered list, each ticket:
+- Title
+- Blocked by (or "None")
+- What it delivers (end-to-end behaviour)
+- Acceptance criteria (checkbox list)
+STATUS: DONE | NEEDS_USER_INPUT
+```
+
+## wayfinder-chart
+
+On-ramp when the effort is too foggy for one-session `/to-spec`. Drafts the **shared map** + decision tickets — decisions, not deliverables. Sol already ran destination + breadth-first Q&A in the orchestrator chat; this worker only synthesizes. Sol confirms the draft; `shell` publishes to the tracker.
+
+```
+Task ID: <id>
+Type: wayfinder-chart
+Skill: wayfinder
+Model: gpt-5.6-terra-high
+
+Destination (from Sol grill):
+<one or two lines — what reaching the end of this map looks like>
+
+Notes (from Sol grill):
+<domain; skills every session should consult; standing preferences>
+
+Frontier decisions (from breadth-first grill):
+<sharp questions takeable now — title + type + one-line Question each>
+
+Fog (Not yet specified):
+<in-scope but not yet sharp enough to ticket>
+
+Out of scope:
+<ruled beyond the destination, if any>
+
+Explore summary:
+<optional>
+
+Constraints:
+- Skill: wayfinder — **chart** mode only; do not resolve tickets
+- Draft map body + child ticket drafts — do not publish (frontier confirms, shell creates)
+- Each ticket: title, wayfinder type (research | prototype | grilling | task), Question body, proposed Blocked by (titles)
+- Ticket when the question is sharp; fog stays in Not yet specified
+- Refer by ticket **name**, never bare ids
+- If no fog and the whole journey fits one session → STATUS: NEEDS_USER_INPUT (suggest skip map → to-spec)
+
+Output:
+1. Map draft (Destination, Notes, Decisions so far empty, Not yet specified, Out of scope)
+2. Numbered ticket drafts (name, type, HITL|AFK, Question, Blocked by)
+STATUS: DONE | NEEDS_USER_INPUT
+```
+
+## wayfinder-research
+
+AFK resolve of one `wayfinder:research` ticket. Findings file + resolution text for shell to post/close.
+
+```
+Task ID: <id>
+Type: wayfinder-research
+Skill: research
+Model: gpt-5.6-terra-high
+
+Map: <map issue name + URL/id>
+Ticket: <ticket name + URL/id>
+Question:
+<verbatim ## Question from the ticket>
+
+Working directory (absolute):
+<repo root>
+
+Constraints:
+- Skill: research — primary sources only; cite each claim
+- Write findings Markdown on a throwaway `research/<slug>` branch (or repo convention); return path
+- Do not close the ticket or edit the map — shell does that after STATUS
+- One ticket only
+
+Output:
+Findings path + 5–15 line resolution answer (gist for Decisions-so-far + pointer to findings).
+STATUS: DONE | BLOCKED
+```
+
+## wayfinder-record
+
+Shell after a ticket resolves (HITL on Sol or AFK worker). Posts resolution, closes ticket, updates map index; optionally creates newly graduated tickets.
+
+```
+Task ID: <id>
+Type: wayfinder-record
+Model: composer-2.5
+
+Working directory (absolute):
+<repo root>
+
+Map: <map name + URL/id>
+Ticket: <ticket name + URL/id>
+Resolution:
+<answer comment body — or path to research findings + gist>
+
+Graduate (optional):
+<new ticket drafts to create, or "none">
+Fog to clear (optional):
+<Not yet specified lines to remove, or "none">
+
+Constraints:
+- **Scoped:** Shell `working_directory` = path above
+- Post resolution comment on ticket; close ticket; append one Decisions-so-far line on map (name-link — gist); never restate full decision on the map
+- Create-then-wire any Graduate tickets; clear graduated fog lines
+- Refer by **name** in map/comments
+
+Output:
+Ticket closed + map updated — one line each; new ticket names if any.
+STATUS: DONE | BLOCKED
 ```

@@ -14,7 +14,8 @@ Record worker model in board `Notes`.
 | Bulk / mechanical implement | `composer-2.5` |
 | Complex implement / user-facing UI | `cursor-grok-4.5-high` |
 | Review | `gpt-5.6-terra-high` |
-| PRD / issues synthesis | `gpt-5.6-terra-high` |
+| Spec / tickets / PRD / issues / wayfinder-chart synthesis | `gpt-5.6-terra-high` |
+| Wayfinder research ticket | `gpt-5.6-terra-high` (`wayfinder-research`) |
 | Commit | `composer-2.5` |
 | PR / `gh` / worktrees / push / issue fetch | `composer-2.5` (`shell`) |
 | Minion explore (delegated) | `composer-2.5` (`explore`) |

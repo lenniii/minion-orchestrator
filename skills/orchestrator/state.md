@@ -16,7 +16,7 @@ Live task queue — **posted in chat**. User reads status here.
 |----|------|-------|--------|------------|-------|
 | T1 | implement | review | in-flight | — | `add-auth` · `/abs/.worktrees/add-auth` · #42 · spawn abc |
 
-**Notes:** worktree, branch, `based-on:` (blocker ID if stacked), `fixed:` (base SHA in worktree), issue #, model, `round:` (review count, max 5), spawn ID, verify result, commit SHA.
+**Notes:** worktree, branch, `based-on:` (blocker ID if stacked), `fixed:` (base SHA in worktree), issue #, model, `round:` (review count, max 5), `confidence:` / `blocking:` (from latest review Metrics), spawn ID, verify result, commit SHA.
 
 Keep `done` / `cancelled` rows until close → close summary → drop board.
 
@@ -26,4 +26,4 @@ Keep `done` / `cancelled` rows until close → close summary → drop board.
 
 ## Gate
 
-After `REVIEW_APPROVED`: board shows verify pass + review approved → spawn **final commit** ([`prompts.md#commit`](prompts.md)) for fix-review changes or noop if clean.
+After `REVIEW_APPROVED` (Confidence ≥ 80 and Blocking = 0): board shows verify pass + Metrics → spawn **final commit** ([`prompts.md#commit`](prompts.md)) for fix-review changes or noop if clean.

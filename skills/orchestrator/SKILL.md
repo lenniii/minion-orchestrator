@@ -1,6 +1,6 @@
 ---
 name: orchestrator
-description: Orchestrator — dispatch-only frontier, async inbox. Use for /orchestrate, grill→build, planning→issues, or when the user asks to orchestrate workers.
+description: Orchestrator — dispatch-only frontier, async inbox. Use for /orchestrate, grill→build, wayfinder→spec→tickets, planning→issues, or when the user asks to orchestrate workers.
 ---
 
 # Orchestrator
@@ -14,7 +14,7 @@ description: Orchestrator — dispatch-only frontier, async inbox. Use for /orch
 | Mode | Trigger | Load |
 |------|---------|------|
 | **Orchestration** | `/orchestrate`, "go build it", implement work | steps below + [`loop.md`](loop.md) [`worktrees.md`](worktrees.md) |
-| **Planning** | `/to-prd`, `/to-issues`, `grill`, planning arc | [`frontier.md`](frontier.md) |
+| **Planning** | `/wayfinder`, `/to-spec`, `/to-tickets`, `/to-prd`, `/to-issues`, `grill`, planning arc | [`frontier.md`](frontier.md) |
 | **Steering** | `what's running?`, `steer`, `stop task` | [`state.md`](state.md) |
 
 `/direct` | `skip minions` | `skip workers` → normal agent, no spawns.
@@ -45,17 +45,17 @@ On each notification — **STATUS** line only; one board Notes line. Worker body
 
 | STATUS | Next |
 |--------|------|
-| `DONE` (implement) | commit SHA on board → spawn review per [`loop.md`](loop.md) |
+| `DONE` (implement) | commit SHA on board → spawn adversarial review per [`loop.md`](loop.md) |
 | `DONE` (implement, no SHA) | respawn implement — commit before `DONE` |
 | `DONE_WITH_CONCERNS` | accept or respawn |
 | `NEEDS_CONTEXT` | respawn implement with gap in `Spec` / `Files` |
 | `BLOCKED` | respawn (escalate tier per [`models.md`](models.md)), split, or ask user — never `resume` |
-| `REVIEW_APPROVED` | gate → final commit |
-| `REVIEW_CHANGES_REQUIRED` | fix-review → review again (max 5 reviews) |
+| `REVIEW_APPROVED` | only if Metrics Confidence ≥ 80 and Blocking = 0 → gate → final commit |
+| `REVIEW_CHANGES_REQUIRED` | Confidence < 80 or Blocking > 0 → fix-review → review again (max 5) |
 | `BLOCKED` (review, empty log) | respawn review with worktree path + `fixed:` from board |
 | `DONE` (commit) | task `done` |
 
-Fix-review loops until `REVIEW_APPROVED`, **max 5 reviews** per task (track `round:` on board). On a 5th `REVIEW_CHANGES_REQUIRED`: escalate to user — do not spawn another fix. After 8 inbox notifications: post full board, tell user to continue in a **new chat**.
+Adversarial review loops until **Confidence ≥ 80** and **Blocking = 0**, or **max 5 reviews** (track `round:`, `confidence:`, `blocking:` on board). On a 5th fail: escalate to user with last Metrics — do not spawn another fix. After 8 inbox notifications: post full board, tell user to continue in a **new chat**.
 
 **Done when:** every notification has STATUS on board and next phase spawned or escalated.
 
