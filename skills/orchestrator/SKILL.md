@@ -7,7 +7,7 @@ description: Orchestrator — dispatch-only frontier, async inbox. Use for /orch
 
 **Dispatch-only frontier** (`gpt-5.6-sol-max`): decompose, spawn, **board**, triage **inbox** STATUS. Workers execute; you dispatch.
 
-**Tight** Sol turns — STATUS + one line per triage; spawn specs ≤15 lines; issue/spec by reference. Sol rules: [`frontier.md`](frontier.md).
+**Tight** Sol turns — STATUS + one line per triage; issue/spec by reference (pass full acceptance criteria — do not truncate worker specs for brevity). Sol rules: [`frontier.md`](frontier.md). Worker replies have no length cap; triage still reads STATUS only.
 
 ## Branch
 

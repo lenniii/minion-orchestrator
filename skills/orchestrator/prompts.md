@@ -23,10 +23,10 @@ Scope (optional):
 Constraints:
 - Read-only
 - **Scoped:** Shell `working_directory` = path above ([`worktrees.md#scoped-cwd`](worktrees.md))
-- Answer only; ≤30 lines
+- Answer the question; be as thorough as the evidence needs — no length cap
 
 Output:
-≤15 lines. Summary + STATUS line only — no tables, no markdown essays.
+Answer body (tables, citations, paths OK), then STATUS.
 STATUS: DONE | BLOCKED
 ```
 
@@ -39,7 +39,7 @@ Skill: implement
 Model: <from models.md>
 
 Spec:
-<issue or excerpt — ≤15 lines>
+<issue body or full acceptance criteria — do not truncate for brevity>
 
 Files:
 - <paths>
@@ -58,10 +58,10 @@ Constraints:
 - **Verify gate:** lint / test / typecheck must pass before `DONE` — work is not done until verify passes
 - **Commit** before DONE — `git add` task files, conventional message referencing issue ID. Do not push.
 - Stop before review — orchestrator spawns review; do not run `/code-review`
-- Insufficient context → STATUS: NEEDS_CONTEXT (one line)
+- Insufficient context → STATUS: NEEDS_CONTEXT (name the gap)
 
 Output:
-One line: commit SHA + message, verify one-liner, diff stat.
+Commit SHA + message, verify result, diff stat; note concerns or gaps if any. Be thorough when useful — no length cap.
 STATUS: DONE | DONE_WITH_CONCERNS | NEEDS_CONTEXT | BLOCKED
 ```
 
@@ -93,13 +93,13 @@ Preflight (mandatory, in order — stop on first failure):
 1. Shell `working_directory` = worktree path; `pwd && git branch --show-current`
 2. `git rev-parse <fixed-point>`
 3. `git log <fixed-point>..HEAD --oneline` OR `git diff HEAD --stat` — at least one must be non-empty
-4. If step 3 empty: re-run once with `working_directory` set; if still empty → `STATUS: BLOCKED` (one line: cwd, branch, fixed point)
+4. If step 3 empty: re-run once with `working_directory` set; if still empty → `STATUS: BLOCKED` (include cwd, branch, fixed point)
 5. **Do not** search branches, reflog, other worktrees, parent repos, or grep for feature terms to "find" the diff
 
 Output:
 STATUS line first, then Metrics (required — score per code-review step 5), then Changes if not approved.
 **Merge gate:** `REVIEW_APPROVED` iff Confidence ≥ 80 **and** Blocking = 0; else `REVIEW_CHANGES_REQUIRED`.
-If `REVIEW_CHANGES_REQUIRED`: blocking bullets under `Changes:` (cite axis) — no prose review essay.
+If `REVIEW_CHANGES_REQUIRED`: blocking findings under `Changes:` (cite axis). Be exhaustive when findings warrant it — no length cap.
 STATUS: REVIEW_APPROVED | REVIEW_CHANGES_REQUIRED | BLOCKED
 ## Metrics
 Confidence to merge: <0–100>
@@ -131,7 +131,7 @@ Constraints:
 - Do not commit — post-review commit handles it
 
 Output:
-One line: verify result + `git diff HEAD --stat`.
+Verify result + `git diff HEAD --stat`; note what you fixed. Be thorough when useful — no length cap.
 STATUS: DONE | BLOCKED
 ```
 
@@ -185,7 +185,7 @@ Constraints:
 - Do not push / open PRs unless spec says
 
 Output:
-≤5 lines: outcome + key command output. No diagnostic essays.
+Outcome + key command output; include diagnostics when something failed or was non-obvious. Be thorough when useful — no length cap.
 STATUS: DONE | BLOCKED
 ```
 
@@ -212,7 +212,7 @@ Constraints:
 - **Scoped:** Shell `working_directory` = repo root above
 
 Output:
-Worktree path, branch, base SHA — one line each.
+Worktree path, branch, base SHA (and any setup notes if useful).
 STATUS: DONE | BLOCKED
 ```
 
@@ -398,7 +398,7 @@ Constraints:
 - One ticket only
 
 Output:
-Findings path + 5–15 line resolution answer (gist for Decisions-so-far + pointer to findings).
+Findings path + resolution answer (gist for Decisions-so-far + pointer to findings). Be as thorough as the research warrants — no length cap.
 STATUS: DONE | BLOCKED
 ```
 
@@ -431,6 +431,6 @@ Constraints:
 - Refer by **name** in map/comments
 
 Output:
-Ticket closed + map updated — one line each; new ticket names if any.
+Ticket closed + map updated; new ticket names if any. Include command/API notes when useful — no length cap.
 STATUS: DONE | BLOCKED
 ```
