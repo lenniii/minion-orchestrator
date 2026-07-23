@@ -45,7 +45,7 @@ On each notification — **STATUS** line only; one board Notes line. Worker body
 
 | STATUS | Next |
 |--------|------|
-| `DONE` (implement) | commit SHA on board → spawn adversarial review per [`loop.md`](loop.md) |
+| `DONE` (implement) | commit SHA on board → apply [`loop.md`](loop.md) review gate; code-bearing diff spawns adversarial review, non-code diff is `done` |
 | `DONE` (implement, no SHA) | respawn implement — commit before `DONE` |
 | `DONE_WITH_CONCERNS` | accept or respawn |
 | `NEEDS_CONTEXT` | respawn implement with gap in `Spec` / `Files` |

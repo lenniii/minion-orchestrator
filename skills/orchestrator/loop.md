@@ -9,12 +9,13 @@ Record `fixed:` (`git rev-parse HEAD` in the **worktree**) in board Notes before
 ## Cycle
 
 1. **Implement** — model per [`models.md`](models.md); `Skill: implement`; prompt [`prompts.md#implement`](prompts.md). Implementer passes **verify gate** (lint / test / typecheck) and **commits** before `DONE`.
-2. **Review** — fresh worker; `Skill: code-review` (adversarial); prompt [`prompts.md#review`](prompts.md). Diff commits since `fixed:` (`git diff <fixed-point>...HEAD`). Reviewer does not re-run verify — trust implementer's one-liner ([`models.md`](models.md)). Increment `round:` on board (1-based; first review is `round: 1`). Record `confidence:` + `blocking:` from Metrics on the board.
-3. **Merge gate (A):** `REVIEW_APPROVED` only when **Confidence ≥ 80** and **Blocking = 0**. Otherwise `REVIEW_CHANGES_REQUIRED`.
-4. `REVIEW_APPROVED` → gate → **commit** ([`prompts.md#commit`](prompts.md)) — second commit for fix-review changes, or noop if clean.
-5. `REVIEW_CHANGES_REQUIRED` → if `round:` < 5: **fix-review** ([`prompts.md#fix-review`](prompts.md)) → step 2; if `round:` ≥ 5: escalate to user with last Metrics — stop the loop.
+2. **Review gate** — inspect the implementer's diff stat. Spawn review only when the diff contains code: source, tests, executable scripts, migrations, styles/templates, or infrastructure as code. Documentation, changelog/changeset, generated artifact, lockfile, and metadata-only diffs skip directly to `done`. A mixed diff is code-bearing.
+3. **Review** — for a code-bearing diff, spawn a fresh worker; `Skill: code-review` (adversarial); prompt [`prompts.md#review`](prompts.md). Diff commits since `fixed:` (`git diff <fixed-point>...HEAD`). Reviewer does not re-run verify — trust implementer's one-liner ([`models.md`](models.md)). Increment `round:` on board (1-based; first review is `round: 1`). Record `confidence:` + `blocking:` from Metrics on the board.
+4. **Merge gate (A):** `REVIEW_APPROVED` only when **Confidence ≥ 80** and **Blocking = 0**. Otherwise `REVIEW_CHANGES_REQUIRED`.
+5. `REVIEW_APPROVED` → gate → **commit** ([`prompts.md#commit`](prompts.md)) — second commit for fix-review changes, or noop if clean.
+6. `REVIEW_CHANGES_REQUIRED` → if `round:` < 5: **fix-review** ([`prompts.md#fix-review`](prompts.md)) → step 3; if `round:` ≥ 5: escalate to user with last Metrics — stop the loop.
 
-**Max 5 reviews** per task. Keep requesting adversarial review until the merge gate passes or the round cap hits. Fresh reviewer each round — never resume implementer for review.
+**Max 5 reviews** per code-bearing task. Keep requesting adversarial review until the merge gate passes or the round cap hits. Fresh reviewer each round — never resume implementer for review.
 
 ## Respawn
 
