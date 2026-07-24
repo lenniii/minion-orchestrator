@@ -55,7 +55,7 @@ On each notification — **STATUS** line only; one board Notes line. Worker body
 | `BLOCKED` (review, empty log) | respawn review with worktree path + `fixed:` from board |
 | `DONE` (commit) | task `done` |
 
-Adversarial review loops until **Confidence ≥ 80** and **Blocking = 0**, or **max 5 reviews** (track `round:`, `confidence:`, `blocking:` on board). On a 5th fail: escalate to user with last Metrics — do not spawn another fix. After 8 inbox notifications: post full board, tell user to continue in a **new chat**.
+Adversarial review loops until **Confidence ≥ 80** and **Blocking = 0**, or **max 5 reviews** (track `round:`, `confidence:`, `blocking:` on board). On a 5th fail: escalate to user with last Metrics — do not spawn another fix.
 
 **Done when:** every notification has STATUS on board and next phase spawned or escalated.
 
