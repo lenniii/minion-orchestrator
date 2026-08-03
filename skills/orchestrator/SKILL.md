@@ -1,72 +1,55 @@
 ---
 name: orchestrator
-description: Orchestrator — dispatch-only frontier, async inbox. Use for /orchestrate, grill→build, wayfinder→spec→tickets, planning→issues, or when the user asks to orchestrate workers.
+description: Simple harness-agnostic multi-model delegation. Use for /orchestrate, delegate this, use minions, or explicit requests to route work to another model/provider.
 ---
 
-# Orchestrator
+# Multi-model delegation
 
-**Dispatch-only frontier** (`gpt-5.6-sol-max`): decompose, spawn, **board**, triage **inbox** STATUS. Workers execute; you dispatch.
+This skill is intentionally small. It provides routing rules and model/provider configuration; it does **not** impose a project-management workflow.
 
-**Tight** Sol turns — STATUS + one line per triage; issue/spec by reference (pass full acceptance criteria — do not truncate worker specs for brevity). Sol rules: [`frontier.md`](frontier.md). Worker replies have no length cap; triage still reads STATUS only.
+When triggered, read:
 
-## Branch
+1. [`delegation.md`](delegation.md) — Frontier → Minion and Escalation rules
+2. [`models.md`](models.md) — role aliases and provider selection
+3. [`personas/README.md`](personas/README.md) — available worker personas
+4. project config: `.minion-models.md` in the current repo, if present
 
-| Mode | Trigger | Load |
-|------|---------|------|
-| **Orchestration** | `/orchestrate`, "go build it", implement work | steps below + [`loop.md`](loop.md) [`worktrees.md`](worktrees.md) |
-| **Planning** | `/wayfinder`, `/to-spec`, `/to-tickets`, `/to-prd`, `/to-issues`, `grill`, planning arc | [`frontier.md`](frontier.md) |
-| **Steering** | `what's running?`, `steer`, `stop task` | [`state.md`](state.md) |
+## Core rule
 
-`/direct` | `skip minions` | `skip workers` → normal agent, no spawns.
+The main thread owns:
 
-Models: [`models.md`](models.md). Prompts: [`prompts.md`](prompts.md). Shell: [`shell.md`](shell.md).
+- understanding the user's request
+- planning the work
+- deciding what to delegate
+- integrating results
+- verification
+- user communication
 
-## Inbox
+Delegates/minions return compact syntheses: findings, diffs, patches, guidance, or blockers. Never ask delegates to dump raw logs or take over the conversation.
 
-Every spawn: `run_in_background: true`. On notification → triage → update **board** → spawn next phase.
+## Provider selection
 
-## 1. Decompose
+On orchestration start, always ask the user which **session provider** to use for this run (for example: `openai-codex`, `cursor`, or another provider) before spawning delegates.
 
-Split the request into tasks. Post initial **board** ([`state.md`](state.md)). Put paths in `Files:`, issue refs in spec — minion discovers the rest ([`loop.md`](loop.md) repo discovery).
+Resolve provider/model mappings in this order:
 
-**Done when:** every task has ID, type, spec, `Blocked by`, issue link (if any); board posted.
+1. Explicit user instruction in the current chat
+2. Project-local `.minion-models.md`
+3. Harness/session facts if visible, e.g. provider/model environment variables
+4. Baseline files under `baselines/<provider>/.minion-models.md`
+5. Global defaults in [`models.md`](models.md)
+6. If still unknown, ask once or handle directly without delegation
 
-## 2. Spawn
+Different projects may use different providers. Do not assume the provider from another repo applies here.
 
-Spawn only **unblocked** tasks. Batch independent tasks in one turn.
+## Minimal loop
 
-Before first implement: worktree per [`worktrees.md`](worktrees.md) — **stacked** tasks base off the blocker's branch, not `origin/main`. Pin model per [`models.md`](models.md). Prompt per [`prompts.md`](prompts.md). Delta-update board ([`state.md`](state.md)).
+1. Decide whether delegation is useful.
+2. Resolve aliases: `frontier`, `fast`, `code`, `deep`, `critic`.
+3. Choose the worker persona from `personas/` independently from the model alias.
+4. Delegate only the subproblem, with an explicit `model` when the harness supports it.
+5. Ask for compact output.
+6. Verify/integrate in the main thread.
+7. Report to the user yourself.
 
-**Done when:** every unblocked task is `in-flight` or waiting on a blocker; or you escalated / asked the user.
-
-## 3. Triage inbox
-
-On each notification — **STATUS** line only; one board Notes line. Worker body stays unread.
-
-| STATUS | Next |
-|--------|------|
-| `DONE` (implement) | commit SHA on board → apply [`loop.md`](loop.md) review gate; code-bearing diff spawns adversarial review, non-code diff is `done` |
-| `DONE` (implement, no SHA) | respawn implement — commit before `DONE` |
-| `DONE_WITH_CONCERNS` | accept or respawn |
-| `NEEDS_CONTEXT` | respawn implement with gap in `Spec` / `Files` |
-| `BLOCKED` | respawn (escalate tier per [`models.md`](models.md)), split, or ask user — never `resume` |
-| `REVIEW_APPROVED` | only if Metrics Confidence ≥ 80 and Blocking = 0 → gate → final commit |
-| `REVIEW_CHANGES_REQUIRED` | Confidence < 80 or Blocking > 0 → fix-review → review again (max 5) |
-| `BLOCKED` (review, empty log) | respawn review with worktree path + `fixed:` from board |
-| `DONE` (commit) | task `done` |
-
-Adversarial review loops until **Confidence ≥ 80** and **Blocking = 0**, or **max 5 reviews** (track `round:`, `confidence:`, `blocking:` on board). On a 5th fail: escalate to user with last Metrics — do not spawn another fix.
-
-**Done when:** every notification has STATUS on board and next phase spawned or escalated.
-
-When a task is `done`, spawn newly unblocked tasks (worktree first).
-
-## 4. Close
-
-When nothing `in-flight`: close summary (bullets — done, blocked, SHAs, branches). Ask user how to land ([`worktrees.md`](worktrees.md)).
-
-**Done when:** user has summary and chose landing (or declined).
-
-## Steering
-
-`what's running?` → delta or full board. `steer <id>: <instruction>` → respawn with instruction in `Spec` ([`loop.md#respawn`](loop.md)). `stop task <id>` → `cancelled`.
+Opt out on `/direct`, `skip minions`, or `handle this yourself`.
